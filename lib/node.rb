@@ -12,7 +12,7 @@ class Node
 
   # include comparable module and compare nodes using their data attribute
   def <=>(other)
-    data.size <=> other.data.size
+    data <=> other.data
   end
 end
 
