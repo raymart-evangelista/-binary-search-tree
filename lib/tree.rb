@@ -74,10 +74,9 @@ class Tree
   def delete(value)
     new_node = Node.new(value)
     curr_node = @root
-
-    byebug
+    
     # traverse until child of parent node is == to value, if child is nil, do nothing
-    until curr_node.left_child == new_node || curr_node.right_child == new_node do
+    until curr_node.left_child == new_node || curr_node.right_child == new_node || curr_node == new_node do
       if new_node < curr_node
         curr_node = curr_node.left_child
       elsif new_node > curr_node
@@ -85,9 +84,34 @@ class Tree
       end
       # by the end of the loop, curr_node should be the parent of the child we are trying to remove
     end
-
+    
+    if curr_node == new_node
+      byebug
+      # case 1: curr_node has no children
+        # shouldn't exist because an array of numbers are given
+      # case 2: curr_node has 1 child
+      if !curr_node.right_child.nil? && curr_node.left_child.nil?
+        # do something
+      elsif curr_node.right_child.nil? && !curr_node.left_child.nil?
+      # case 3: curr_node has 2 children
+      elsif !curr_node.right_child.nil? && !curr_node.left_child.nil?
+        # find next smallest biggest to the node we want to delete by looking in right subtree
+        iter = curr_node.right_child
+        until iter.left_child.left_child.nil?
+          iter = iter.left_child
+        end
+        # with the smallest biggest value, swap with the node we want to delete
+        curr_node.data = iter.left_child.data
+        # if it had right children, let iter point to it's children
+        if !iter.left_child.right_child.nil?
+          iter = iter.right_child
+        else
+          iter.left_child = nil
+        end
+      end
+    
     # WORKING WITH curr_node's right child
-    if curr_node.right_child == new_node
+    elsif curr_node.right_child == new_node
       
       # case 1: (ONLY curr_node right child with NO CHILDREN is present) deleting leaf (very easy)
       if curr_node.right_child.left_child.nil? && curr_node.right_child.right_child.nil?
@@ -107,6 +131,7 @@ class Tree
         # curr_node.right_child = nil
       # case 3: curr_node right child has two children
       elsif !curr_node.right_child.left_child.nil? && !curr_node.right_child.right_child.nil?
+        
         # find next smallest biggest to the node we want to delete by looking in right subtree
         iter = curr_node.right_child.right_child.left_child
         until iter.left_child.left_child.nil?
@@ -124,7 +149,6 @@ class Tree
 
       # case 1: (ONLY curr_node left child with NO CHILDREN is present)
       if curr_node.left_child.left_child.nil? && curr_node.left_child.right_child.nil?
-        byebug
         puts "deleted"
         curr_node.left_child = nil
       # case 2: (ONLY curr_node left child's left child is present)
@@ -170,3 +194,4 @@ tree = Tree.new(arr, 0, arr.length-1)
 
 tree.delete(20)
 tree.delete(30)
+tree.delete(50)
