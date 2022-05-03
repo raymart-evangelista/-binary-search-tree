@@ -3,7 +3,7 @@ require "pry-byebug"
 
 class Tree
   def initialize(arr, first, last)
-    @root = build_tree(arr, first, last)
+    @root = build_tree(arr.sort.uniq, first, last)
     pretty_print
   end
 
@@ -12,9 +12,6 @@ class Tree
     # first, sort and remove dups
     if arr.nil?
       return nil
-    else
-      arr.uniq!
-      arr.sort!
     end
 
     # turn into balance binary tree full of Node objects appropriately placed
