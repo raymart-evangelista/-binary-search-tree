@@ -17,32 +17,22 @@ class Tree
     end
 
     # turn into balance binary tree full of Node objects appropriately placed
-    # first = 0
-    # last = arr.length - 1
 
     return nil if first > last
 
-    mid = (first + last) / 2
-    node = Node.new(arr[mid])
-
     # base case
-    # return node if first > last
-
+    mid = (first + last) / 2
     
+    node = Node.new(arr[mid])
 
     # recurisvely do these steps
       # calculate mid of left subarr and make it root of left subtree of "node"
       # calculate mid of right subarr and mkae it root of right subtree of "node"
 
-    # left_arr = arr[first..mid-1]
     node.left_child = build_tree(arr, first, mid-1)
-    
-    # right_arr = arr[mid+1..last]
-    # byebug
-    node.right_child = build_tree(arr, mid+1, last)
 
+    node.right_child = build_tree(arr, mid+1, last)
     
-    byebug
     return node
   end
 
