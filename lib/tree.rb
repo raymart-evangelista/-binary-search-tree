@@ -161,7 +161,9 @@ end
 # arr = [50, 30, 70, 20, 40, 60, 80]
 arr = %w[a b c d e f g h i j k]
 tree = Tree.new(arr, 0, arr.length-1)
+
 p tree.level_order
+tree.level_order { |node| p node.data }
 
 # tree.insert(100)
 # tree.insert(200)
