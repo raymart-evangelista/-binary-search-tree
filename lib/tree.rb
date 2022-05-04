@@ -148,6 +148,37 @@ class Tree
 
   end
 
+  # <left><root><right>
+  def inorder(&block)
+    # visit left subtree
+    # visit root
+    # visit right subtree
+  end
+
+  # <root><left><right>
+  def preorder(node=@root, &block)
+    # base case
+    return nil if node.nil?
+    # visit root
+    if block_given?
+      block.call(node.data)
+    else
+      puts node.data
+    end
+    # visit left subtree
+    preorder(node.left_child)
+    # visit right subtree
+    preorder(node.right_child)
+  end
+
+  # <left><right><root>
+  def postorder(&block)
+    # visit left subtree
+    # visit right subtree
+    # visit root
+
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -162,8 +193,10 @@ end
 arr = %w[a b c d e f g h i j k]
 tree = Tree.new(arr, 0, arr.length-1)
 
-p tree.level_order
-tree.level_order { |node| p node.data }
+#  p tree.level_order
+# tree.level_order { |node| p node.data }
+
+tree.preorder
 
 # tree.insert(100)
 # tree.insert(200)
