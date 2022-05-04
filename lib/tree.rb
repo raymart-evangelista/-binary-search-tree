@@ -68,9 +68,10 @@ class Tree
     end
 
     if value < node.data
-      # base case
+      # traverse left 
       node.left_child = delete(value, node.left_child)
     elsif value > node.data
+      # traverse right
       node.right_child = delete(value, node.right_child)
     # if key is same as node's value, then this is the node to be deleted
     else
@@ -103,6 +104,23 @@ class Tree
     return min_val
   end
 
+  def find(value, node=@root)
+    # base case, node doesn't exist, so exit out
+    if node.nil?
+      return nil
+    # base case, node exists and equals the value we are looking for
+    elsif value == node.data
+      return node
+    # recursive cases
+    elsif
+      if value < node.data
+        return find(value, node.left_child)
+      elsif value > node.data
+        return find(value, node.right_child)
+      end
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -130,4 +148,6 @@ tree.delete(70)
 tree.pretty_print
 # tree.delete(20)
 # tree.delete(30)
-# tree.delete(50)s
+tree.delete(50)
+tree.pretty_print
+p tree.find(100)
