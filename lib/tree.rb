@@ -149,10 +149,19 @@ class Tree
   end
 
   # <left><root><right>
-  def inorder(&block)
+  def inorder(node=@root, &block)
+    # base case
+    return nil if node.nil?
     # visit left subtree
+    inorder(node.left_child, &block)
     # visit root
+    if block_given?
+      block.call(node)
+    else
+      puts node.data
+    end
     # visit right subtree
+    inorder(node.right_child, &block)
   end
 
   # <root><left><right>
@@ -172,10 +181,19 @@ class Tree
   end
 
   # <left><right><root>
-  def postorder(&block)
+  def postorder(node=@root, &block)
+    # base case
+    return nil if node.nil?
     # visit left subtree
+    postorder(node.left_child, &block)
     # visit right subtree
+    postorder(node.right_child, &block)
     # visit root
+    if block_given?
+      block.call(node)
+    else
+      puts node.data
+    end
 
   end
 
@@ -196,7 +214,7 @@ tree = Tree.new(arr, 0, arr.length-1)
 #  p tree.level_order
 # tree.level_order { |node| p node.data }
 
-tree.preorder { |node| p node.data }
+tree.postorder { |node| p node.data }
 
 # tree.insert(100)
 # tree.insert(200)
