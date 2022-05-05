@@ -197,6 +197,42 @@ class Tree
 
   end
 
+  def height(node=@root, l_height=0, r_height=0)
+    # parameter is a node, height of that node is returned
+    # height is defined as the number of edges in longest path from a given node to a leaf node
+    
+    # base case
+    return 0 if node.nil?
+
+
+    # if the node has children, traverse
+    if !node.left_child.nil?
+      l_height += 1
+      l_height = height(node.left_child, l_height, r_height)
+    end
+    if !node.right_child.nil?
+      r_height += 1
+      r_height = height(node.right_child, l_height, r_height)
+    end
+    
+    if l_height > r_height
+      return l_height
+    else
+      return r_height
+    end
+    
+
+  end
+
+  def depth
+  end
+
+  def balanced?
+  end
+
+  def rebalance
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right_child, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right_child
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
@@ -206,15 +242,21 @@ class Tree
 end
 
 # arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-# arr = [1,2,3,4,5,6,7,8,9]
+arr = [1,2,3,4,5,6,7,8,9]
 # arr = [50, 30, 70, 20, 40, 60, 80]
-arr = %w[a b c d e f g h i j k]
+# arr = %w[a b c d e f g h i j k l m n]
 tree = Tree.new(arr, 0, arr.length-1)
 
 #  p tree.level_order
 # tree.level_order { |node| p node.data }
 
-tree.postorder { |node| p node.data }
+# tree.postorder { |node| p node.data }
+# tree.insert(10)
+# tree.insert(11)
+# tree.insert(12)
+tree.pretty_print
+
+p tree.height
 
 # tree.insert(100)
 # tree.insert(200)
