@@ -7,7 +7,7 @@ class Tree
     pretty_print
   end
 
-  def build_tree(arr, first, last)
+  def build_tree(arr, first=0, last=arr.length-1)
     puts "Building tree..."    
     # first, sort and remove dups
     if arr.nil?
@@ -31,6 +31,7 @@ class Tree
 
     node.right_child = build_tree(arr, mid+1, last)
     return node
+    
   end
 
   def insert(value, node=@root)
@@ -224,13 +225,43 @@ class Tree
 
   end
 
-  def depth
+  # depth is the number of edges in path from given node to tree's root node
+  def depth(given_node=@root, parent_node=@root, edges=0)
+    # base case given node is the root node
+    return 0 if given_node == parent_node
+    return -1 if parent_node.nil?
+
+    if given_node < parent_node
+      edges += 1
+      depth(given_node, parent_node.left_child, edges)
+    elsif given_node > parent_node
+      edges += 1
+      depth(given_node, parent_node.right_child, edges)
+    else
+      edges
+    end
+
   end
 
-  def balanced?
+  def balanced?(parent=@root)
+    l_child = parent.left_child
+    r_child = parent.right_child
+    difference = height(l_child) - height(r_child)
+    if difference < 1 && difference > -1
+      return true
+    else
+      pretty_print
+      rebalance
+      pretty_print
+      return puts "tree rebalanced."
+    end
   end
 
   def rebalance
+    new_arr = []
+    inorder { |node| new_arr.push(node.data)}
+    @root = build_tree(new_arr)
+    
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
@@ -254,12 +285,17 @@ tree = Tree.new(arr, 0, arr.length-1)
 # tree.insert(10)
 # tree.insert(11)
 # tree.insert(12)
+# tree.pretty_print
+
+# p tree.balanced?
+
+tree.insert(100)
+tree.insert(200)
 tree.pretty_print
+tree.balanced?
 
-p tree.height
-
-# tree.insert(100)
-# tree.insert(200)
+# tree.rebalance
+# tree.pretty_print
 # tree.insert(400)
 # tree.pretty_print
 # tree.delete(400)
