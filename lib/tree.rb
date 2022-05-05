@@ -161,14 +161,14 @@ class Tree
     return nil if node.nil?
     # visit root
     if block_given?
-      block.call(node.data)
+      block.call(node)
     else
       puts node.data
     end
     # visit left subtree
-    preorder(node.left_child)
+    preorder(node.left_child, &block)
     # visit right subtree
-    preorder(node.right_child)
+    preorder(node.right_child, &block)
   end
 
   # <left><right><root>
@@ -196,7 +196,7 @@ tree = Tree.new(arr, 0, arr.length-1)
 #  p tree.level_order
 # tree.level_order { |node| p node.data }
 
-tree.preorder
+tree.preorder { |node| p node.data }
 
 # tree.insert(100)
 # tree.insert(200)
