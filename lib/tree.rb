@@ -2,13 +2,13 @@ require "./lib/node.rb"
 require "pry-byebug"
 
 class Tree
-  def initialize(arr, first, last)
-    @root = build_tree(arr.sort.uniq, first, last)
+  def initialize(arr)
+    arr.sort!.uniq!
+    @root = build_tree(arr)
     pretty_print
   end
 
   def build_tree(arr, first=0, last=arr.length-1)
-    puts "Building tree..."    
     # first, sort and remove dups
     if arr.nil?
       return nil
@@ -60,9 +60,6 @@ class Tree
   end
   
   def delete(value, node=@root)
-
-    # byebug
-
     # base case
     if node.nil?
       return node
@@ -150,52 +147,57 @@ class Tree
   end
 
   # <left><root><right>
-  def inorder(node=@root, &block)
+  def inorder(node=@root, values=[], &block)
     # base case
     return nil if node.nil?
     # visit left subtree
-    inorder(node.left_child, &block)
+    inorder(node.left_child, values, &block)
     # visit root
     if block_given?
       block.call(node)
     else
-      puts node.data
+      values.push(node.data)
     end
     # visit right subtree
-    inorder(node.right_child, &block)
+    inorder(node.right_child, values, &block)
+
+    return values
   end
 
   # <root><left><right>
-  def preorder(node=@root, &block)
+  def preorder(node=@root, values=[], &block)
     # base case
     return nil if node.nil?
     # visit root
     if block_given?
       block.call(node)
     else
-      puts node.data
+      values.push(node.data)
     end
     # visit left subtree
-    preorder(node.left_child, &block)
+    preorder(node.left_child, values, &block)
     # visit right subtree
-    preorder(node.right_child, &block)
+    preorder(node.right_child, values, &block)
+
+    return values
   end
 
   # <left><right><root>
-  def postorder(node=@root, &block)
+  def postorder(node=@root, values=[], &block)
     # base case
     return nil if node.nil?
     # visit left subtree
-    postorder(node.left_child, &block)
+    postorder(node.left_child, values, &block)
     # visit right subtree
-    postorder(node.right_child, &block)
+    postorder(node.right_child, values, &block)
     # visit root
     if block_given?
       block.call(node)
     else
-      puts node.data
+      values.push(node.data)
     end
 
+    return values
   end
 
   def height(node=@root, l_height=0, r_height=0)
@@ -229,7 +231,8 @@ class Tree
   def depth(given_node=@root, parent_node=@root, edges=0)
     # base case given node is the root node
     return 0 if given_node == parent_node
-    return -1 if parent_node.nil?
+    # base case tree doesn't exist
+    return nil if parent_node.nil?
 
     if given_node < parent_node
       edges += 1
@@ -237,23 +240,18 @@ class Tree
     elsif given_node > parent_node
       edges += 1
       depth(given_node, parent_node.right_child, edges)
-    else
-      edges
     end
-
+    return edges
   end
 
   def balanced?(parent=@root)
     l_child = parent.left_child
     r_child = parent.right_child
     difference = height(l_child) - height(r_child)
-    if difference < 1 && difference > -1
+    if difference <= 1 && difference >= -1
       return true
     else
-      pretty_print
-      rebalance
-      pretty_print
-      return puts "tree rebalanced."
+      return false
     end
   end
 
@@ -272,40 +270,24 @@ class Tree
   
 end
 
-# arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]
-arr = [1,2,3,4,5,6,7,8,9]
-# arr = [50, 30, 70, 20, 40, 60, 80]
-# arr = %w[a b c d e f g h i j k l m n]
-tree = Tree.new(arr, 0, arr.length-1)
+arr = Array.new(15) { rand(1..100) }
+arr = [5, 13, 31, 38, 40, 46, 47, 53, 55, 67, 77, 77, 85, 90, 97]
+p arr.sort
+tree = Tree.new(arr)
+p tree.balanced?
+p tree.level_order
+p tree.postorder
+p tree.preorder
+p tree.inorder
+tree.insert(101)
+tree.insert(102)
+tree.insert(103)
+tree.insert(104)
+p tree.balanced?
+tree.rebalance
+p tree.balanced?
 
-#  p tree.level_order
-# tree.level_order { |node| p node.data }
-
-# tree.postorder { |node| p node.data }
-# tree.insert(10)
-# tree.insert(11)
-# tree.insert(12)
-# tree.pretty_print
-
-# p tree.balanced?
-
-tree.insert(100)
-tree.insert(200)
-tree.pretty_print
-tree.balanced?
-
-# tree.rebalance
-# tree.pretty_print
-# tree.insert(400)
-# tree.pretty_print
-# tree.delete(400)
-# tree.pretty_print
-# tree.delete(200)
-# tree.pretty_print
-# tree.delete(100)
-# tree.pretty_print
-# tree.delete(70)
-# tree.pretty_print
-# tree.delete(50)
-# tree.pretty_print
-# p tree.find(100)
+p tree.level_order
+p tree.postorder
+p tree.preorder
+p tree.inorder
